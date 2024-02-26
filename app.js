@@ -4,11 +4,30 @@
 const express = require('express');
 const morgan = require('morgan');
 
+const { sequelize } = require('./models');
+
+
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 // create the Express app
 const app = express();
+
+/* Use Sequelize's authenticate function to test the database connection. 
+A message should be logged to the console informing the user 
+that the connection was successful or that there was an error.*/
+/* Use the sequelize.authenticate() method to asynchronously connect to the database 
+and log out a message indicating that a connection has/hasn’t been established */
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+    sequelize.sync()
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+})();
+
 
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
