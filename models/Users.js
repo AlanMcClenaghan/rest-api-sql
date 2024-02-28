@@ -45,5 +45,18 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+
+  /* In the Users model, add a one-to-many association between the User 
+  and Course models using the hasMany() method. */
+  User.associate = (models) => {
+    as: 'user', // alias
+    User.hasMany(models.Course, {
+      foreignKey: {
+        fieldName: 'userId',
+        allowNull: false,
+      },
+    });
+  };
+
   return User;
 };

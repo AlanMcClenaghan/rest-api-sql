@@ -45,5 +45,21 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+
+  /* In the Courses model, add a one-to-one association between the Course 
+  and User models using the belongsTo() method. */
+  Course.associate = (models) => {
+    Course.belongsTo(models.User, {
+      as: 'user', // alias
+      foreignKey: {
+        fieldName: 'userId',
+        allowNull: false,
+      },
+    });
+  };
+
+
+
+
   return Course;
 };
