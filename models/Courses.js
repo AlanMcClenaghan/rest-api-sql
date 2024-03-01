@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'User',
+    modelName: 'Course',
   });
 
   /* In the Courses model, add a one-to-one association between the Course 
@@ -57,9 +57,6 @@ module.exports = (sequelize, DataTypes) => {
       },
     });
   };
-
-
-
 
   return Course;
 };

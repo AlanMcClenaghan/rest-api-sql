@@ -6,12 +6,17 @@ const morgan = require('morgan');
 
 const { sequelize } = require('./models');
 
+const routes = require('./routes');
+
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 // create the Express app
 const app = express();
+
+// setup morgan which gives us http request logging
+app.use(morgan('dev'));
 
 /* Use Sequelize's authenticate function to test the database connection. 
 A message should be logged to the console informing the user 
@@ -28,9 +33,9 @@ and log out a message indicating that a connection has/hasn’t been established
   }
 })();
 
+// Add routes.
+app.use('/api', routes);
 
-// setup morgan which gives us http request logging
-app.use(morgan('dev'));
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
