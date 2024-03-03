@@ -8,7 +8,7 @@ const { authenticateUser } = require('./middleware/auth-user');
 for the currently authenticated User along with a 200 HTTP status code. */
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
   const user = req.currentUser;
-  console.log("User: " + user);
+  console.log("User: " + user.id);
   res.status(200).json({
     id: user.id,
     firstName: user.firstName,
@@ -26,6 +26,7 @@ router.post('/users', asyncHandler(async (req, res) => {
   } catch (error) {
     if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
       const errors = error.errors.map(err => err.message);
+      console.log("Errors: " + errors);
       res.status(400).json({ errors });
     } else {
       throw error;
@@ -63,28 +64,58 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
   res.status(200).json(course);
 }));
 
-
 /* A /api/courses POST route that will create a new course, 
 set the Location header to the URI for the newly created course, 
 and return a 201 HTTP status code and no content. */
-
-
-
-
+router.post('/courses',authenticateUser, asyncHandler(async (req, res) => {
+  let course;
+  console.log("Course: " + course);
+  try {
+    course = await Course.create(req.body);
+    console.log("Course: " + course);
+    res.status(201).location(`/courses/${course.id}`).end();
+  } catch (error) {
+    if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+      const errors = error.errors.map(err => err.message);
+      console.log("Errors: " + errors);
+      console.log("Course: " + course);
+      res.status(400).json({ errors });
+    } else {
+      throw error;
+    }
+  }
+}));
 
 /* A /api/courses/:id PUT route that will update the corresponding course 
 and return a 204 HTTP status code and no content. */
-
-
-
-
+router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
+  let course;
+  console.log("Course: " + course);
+  try {
+    course = await Course.findByPk(req.params.id);
+    await Course.update(req.body);
+    console.log("Course: " + course);
+    res.status(204).location(`/courses/${course.id}`).end();
+  } catch (error) {
+    if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+      const errors = error.errors.map(err => err.message);
+      console.log("Course: " + course);
+      console.log("Errors: " + errors);
+      res.status(400).json({ errors });
+    } else {
+      throw error;
+    }
+  }
+}));
 
 /* A /api/courses/:id DELETE route that will delete the corresponding course 
 and return a 204 HTTP status code and no content. */
-
-
-
-
-
+router.post('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
+  const course = await Course.findByPk(req.params.id);
+  console.log("Course: " + course);
+  await book.destroy();
+  console.log("Course: " + course);
+  res.status(204).end();
+}));
 
 module.exports = router;

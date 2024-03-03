@@ -27,7 +27,7 @@ and log out a message indicating that a connection has/hasn’t been established
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
-    // sequelize.sync()
+    sequelize.sync()
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
