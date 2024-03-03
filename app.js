@@ -27,7 +27,7 @@ and log out a message indicating that a connection has/hasn’t been established
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
-    sequelize.sync()
+    // sequelize.sync()
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
@@ -64,7 +64,7 @@ app.use((err, req, res, next) => {
 });
 
 // set our port
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 5000);
 
 // start listening on our port
 const server = app.listen(app.get('port'), () => {
