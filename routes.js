@@ -1,23 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const { asyncHandler } = require('./middleware/async-handler');
 const {User, Course} = require('./models');
-
-/* Handler function to wrap each route. */
-function asyncHandler(cb){
-  return async(req, res, next) => {
-    try {
-      await cb(req, res, next)
-    } catch(error){
-      // Forward error to the global error handler
-      next(error);
-    }
-  }
-}
+const { authenticateUser } = require('./middleware/auth-user');
 
 /* A /api/users GET route that will return all properties and values 
 for the currently authenticated User along with a 200 HTTP status code. */
-router.get('/users', asyncHandler(async (req, res) => {
+router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
   const user = req.currentUser;
+  console.log("User: " + user);
   res.status(200).json({
     id: user.id,
     firstName: user.firstName,
@@ -41,5 +32,59 @@ router.post('/users', asyncHandler(async (req, res) => {
     }
   }
 }));
+
+/* A /api/courses GET route that will return all courses 
+including the User associated with each course and a 200 HTTP status code. */
+router.get('/courses', asyncHandler(async (req, res) => {
+  const courses = await Course.findAll(
+    {include: [
+      {
+        model: User,
+        as: 'user'
+      }
+    ]}
+  );
+  // console.log(courses.map(course => course.get({ plain: true })));
+  res.status(200).json(courses);
+}));
+
+/* A /api/courses/:id GET route that will return the corresponding course 
+including the User associated with that course and a 200 HTTP status code. */
+router.get('/courses/:id', asyncHandler(async (req, res) => {
+  const course = await Course.findByPk(req.params.id,
+    {include: [
+      {
+        model: User,
+        as: 'user'
+      }
+    ]}
+  );
+  console.log(course);
+  res.status(200).json(course);
+}));
+
+
+/* A /api/courses POST route that will create a new course, 
+set the Location header to the URI for the newly created course, 
+and return a 201 HTTP status code and no content. */
+
+
+
+
+
+/* A /api/courses/:id PUT route that will update the corresponding course 
+and return a 204 HTTP status code and no content. */
+
+
+
+
+
+/* A /api/courses/:id DELETE route that will delete the corresponding course 
+and return a 204 HTTP status code and no content. */
+
+
+
+
+
 
 module.exports = router;
