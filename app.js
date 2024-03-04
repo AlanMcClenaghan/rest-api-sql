@@ -8,7 +8,6 @@ const { sequelize } = require('./models');
 
 const routes = require('./routes');
 
-
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
@@ -27,15 +26,17 @@ and log out a message indicating that a connection has/hasn’t been established
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
-    sequelize.sync()
+    // sequelize.sync()
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 })();
 
+// Express
+app.use(express.json());
+
 // Add routes.
 app.use('/api', routes);
-
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
