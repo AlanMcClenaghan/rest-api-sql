@@ -9,17 +9,12 @@ exports.authenticateUser = async (req, res, next) => {
     let message;
   
     const credentials = auth(req);
-    console.log("credentials: " + credentials.pass);
   
     if (credentials) {
       const user = await User.findOne({ where: {emailAddress: credentials.name} });
-      console.log("user.emailAddress: " + user.emailAddress);
       if (user) {
         const authenticated = bcrypt
           .compareSync(credentials.pass, user.password);
-          console.log("credentials.pass: " + credentials.pass);
-          console.log("user.password: " + user.password);
-          console.log("authenticated: " + authenticated);
           // why does this not evaluate to true?
         if (authenticated) {
           console.log(`Authentication successful for Email Address: ${user.emailAddress}`);
